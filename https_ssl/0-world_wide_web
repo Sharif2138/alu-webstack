@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#This script takes a domain and an optional subdomain as parameters
+#It searches for and displays the IP address (A record) of the subdomains(s).
+#If only a domain is provided, it checks default subdomains.
+#The results are printed to the terminal
+
+audit_subdomain() {
+  local domain=$1
+  local subdomain=$2
+
+  local result=$(dig + short $subdomain.$domain)
+
+  if [[ -z $result ]]; then
+    echo "The subdomain $subdomain does not have an A record or is unreachable"
+  else
+    echo "The subdomain $subdomain is a A record and points to $result"
+  fi
+}
+
+if [[ -z $1 ]]; then
+  echo "Usage: $0 domain [subdomain]"
+  exit 1
+fi
+
+domain=$1
+
+# If only domain is provided, check the default subdomains
+if [[ -z $2 ]]; then
+  for sub in www lb-01 web-01 web-02; do
+    audit_subdomain $domain $sub
+  done
+else
+  # If both domain and subdomain are provided
+  subdomain=$2
+  audit_subdomain $domain $subdomain
+fi
+
