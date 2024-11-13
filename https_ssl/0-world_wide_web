@@ -8,7 +8,7 @@ audit_subdomain() {
   local domain=$1
   local subdomain=$2
 
-  local result=$(dig + short $subdomain.$domain)
+  local result=$(dig +short $subdomain.$domain)
 
   if [[ -z $result ]]; then
     echo "The subdomain $subdomain does not have an A record or is unreachable"
