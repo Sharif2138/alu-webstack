@@ -33,11 +33,14 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
 
-frontend https_front
-    bind *:443 ssl crt /etc/letsencrypt/live/www.sharifkiviiri.tech/haproxy.pem
-    default_backend web_backend
+frontend sharif_frontend
+    bind *:80
 
-backend web_backend
+    bind *:443 ssl crt /etc/letsencrypt/live/www.sharifkiviiri.tech/haproxy.pem
+    mode http-request set-header X-forwarded-proto https
+    default_backend sharif_backend
+
+backend sharif_backend
     balance roundrobin
-    server web-01 52.91.217.20:80 check
-    server web-02 44.220.164.78:80 check
+    server 6344-web-01 52.91.217.20:80 check
+    server 6344-web-02 44.220.164.78:80 check
